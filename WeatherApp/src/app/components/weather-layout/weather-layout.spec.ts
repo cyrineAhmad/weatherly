@@ -4,7 +4,7 @@ import { LeftContainer } from '../left-container/left-container';
 import { RightContainer } from '../right-container/right-container';
 import { Router } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-
+ 
 describe('WeatherLayout', () => {
   let component: WeatherLayout;
   let fixture: ComponentFixture<WeatherLayout>;
