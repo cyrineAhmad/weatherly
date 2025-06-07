@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Weather } from '../../Services/weather';
-@Component({
+@Component({ 
   standalone: true,
   selector: 'app-right-container',
   imports: [CommonModule, FontAwesomeModule],
