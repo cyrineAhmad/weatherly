@@ -1,0 +1,20 @@
+node_modules/
+
+# Environment variables
+.env
+**/.env
+
+# Angular build and cache
+WeatherApp/dist/
+WeatherApp/.angular/
+WeatherApp/.angular/cache/
+backend/dist/
+
+# IDE and system files
+.DS_Store
+Thumbs.db
+*.log
+*.log.*
+
+# VS Code settings
+.vscode/
