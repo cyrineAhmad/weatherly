@@ -233,7 +233,7 @@ export class Weather {
         longitude = this.locationDetails?.location.longitude[0];
 
         this.getWeatherReport(
-          this.date,
+          this.date, 
           latitude,
           longitude,
           this.language,
