@@ -7,3 +7,4 @@ export class TemperatureData {
   rainPercent: number;
   location: string;
 }
+ 
