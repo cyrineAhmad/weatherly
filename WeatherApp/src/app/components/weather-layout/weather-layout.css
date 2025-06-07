@@ -1,0 +1,131 @@
+.app-container {
+  width: 100vw;
+  height: 100vh;
+  background-color: #d6d7d8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+}
+
+.weather-container {
+  height: 80vh;
+  width: 65vw;
+  background-color: #ffffff;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: row;
+}
+
+.left-container {
+  flex: 3;
+  background-color: #ffffff;
+  border-radius: 30px;
+  padding: 20px;
+}
+
+.right-container {
+  flex: 7;
+  background-color: #f6f6f6;
+  border-radius: 30px;
+}
+
+@media screen and (max-width: 1200px) {
+  .weather-container {
+    width: 80vw;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .weather-container {
+    width: 90vw;
+    height: 90vh;
+    min-height: 90vh;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .weather-container {
+    flex-direction: column;
+    min-height: 100vh;
+    border-radius: 0;
+    width: 100vw;
+  }
+
+  .left-container {
+    border-radius: 0;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+  }
+
+  .right-container {
+    border-radius: 0;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .app-container {
+    align-items: flex-start;
+  }
+
+  .weather-container {
+    min-height: 100vh;
+  }
+
+  .left-container-data-box {
+    margin-left: 15px !important;
+    margin-right: 15px !important;
+  }
+
+  .right-container-data-box {
+    margin: 15px !important;
+  }
+
+  .right-container-todays-highlight-cards {
+    flex-direction: column;
+  }
+
+  .right-container-todays-highlight-card {
+    width: 100%;
+    margin-bottom: 10px;
+    margin-left: 0;
+  }
+
+  .right-container-week-cards {
+    flex-wrap: wrap;
+  }
+
+  .card {
+    width: 60px;
+    height: 85px;
+    margin-bottom: 5px;
+  }
+
+  .left-container-temp-img img {
+    width: 120px;
+    height: 120px;
+  }
+
+  .left-container-temp-value {
+    font-size: 48px;
+  }
+
+  .left-container-temp-value sup {
+    font-size: 28px;
+  }
+
+  .right-container-nav-bar {
+    padding: 0 15px !important;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-bar-tabs {
+    margin-bottom: 10px;
+  }
+
+  .nav-bar-metric {
+    margin-right: 0 !important;
+    margin-bottom: 10px;
+  }
+}

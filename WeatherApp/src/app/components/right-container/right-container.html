@@ -1,0 +1,195 @@
+<div class="right-container">
+  <div class="right-container-nav-bar">
+    <div class="nav-bar-tabs">
+      <div
+        class="tab"
+        [class.active]="this.weatherService.today"
+        (click)="onTodayClick()"
+      >
+        Today
+      </div>
+      <div
+        class="tab"
+        [class.active]="this.weatherService.week"
+        (click)="onWeekClick()"
+      >
+        Week
+      </div>
+    </div>
+
+    <div class="nav-bar-metric">
+      <div
+        class="celsius"
+        [class.celsius-active]="this.weatherService.celsius"
+        (click)="onCelsiusClick()"
+      >
+        °C
+      </div>
+
+      <div
+        class="fahrenheit"
+        [class.fahrenheit-active]="this.weatherService.fahrenheit"
+        (click)="onFahrenheitClick()"
+      >
+        °F
+      </div>
+    </div>
+  </div>
+
+  <div class="right-container-data-box">
+    <!-- WEEK CARDS -->
+    <div
+      class="right-container-week-cards"
+      *ngIf="this.weatherService.week === true"
+    >
+      <div class="card" *ngFor="let card of weatherService.weekData">
+        <div class="card-day">{{card.day}}</div>
+        <div class="card-temp-img">
+          <img src="{{card.summaryImage}}" alt="summaryImage" />
+        </div>
+        <div class="card-temp-value">
+          <span class="temp-min"
+            >{{this.weatherService.celsius==true ? card.tempMin :
+            this.weatherService.celsiusToFahrenheit(card.tempMin)}}{{this.weatherService.celsius
+            == true ? "°C" : "°F" }} </span
+          ><span class="temp-max"
+            >{{this.weatherService.celsius==true ? card.tempMax :
+            this.weatherService.celsiusToFahrenheit(card.tempMax)}}{{this.weatherService.celsius
+            == true ? "°C" : "°F" }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TODAY CARDS -->
+    <div
+      class="right-container-today-cards"
+      *ngIf="this.weatherService.today === true"
+    >
+      <div class="card" *ngFor="let card of weatherService.todayData">
+        <div class="card-day">{{card.time}}</div>
+        <div class="card-temp-img">
+          <img src="{{card.summaryImage}}" alt="summaryImage" />
+        </div>
+        <div class="card-temp-value">
+          {{this.weatherService.celsius == true ? card.temperature :
+          this.weatherService.celsiusToFahrenheit(card.temperature)}}{{this.weatherService.celsius
+          == true ? "°C" : "°F" }}
+        </div>
+      </div>
+    </div>
+
+    <!-- TODAY'S HIGHLIGHT -->
+    <div class="right-container-todays-highlight">
+      <div class="right-container-todays-highlight-title">
+        Today's Highlight
+      </div>
+      <div class="right-container-todays-highlight-cards">
+        <div class="right-container-todays-highlight-card">
+          <div class="right-container-todays-highlight-card-title">
+            UV Index
+          </div>
+          <div class="gauge">
+            <div class="gauge__body">
+              <div class="gauge__fill"></div>
+              <div class="gauge__cover"></div>
+            </div>
+          </div>
+          <div class="right-container-todays-highlight-value">
+            {{this.weatherService.todaysHighlight.uvIndex}}
+          </div>
+        </div>
+        <div class="right-container-todays-highlight-card">
+          <div class="right-container-todays-highlight-card-title">
+            Wind Status
+          </div>
+          <div class="wind-status-value">
+            {{this.weatherService.todaysHighlight.windStatus}}<span class="unit"
+              >km/hr</span
+            >
+          </div>
+          <div class="wind-status-logo"><img src="/windy.png" alt="" /></div>
+        </div>
+        <div class="right-container-todays-highlight-card">
+          <div class="right-container-todays-highlight-card-title">
+            Sunrise & Sunset
+          </div>
+          <div class="sunrise-sunset-value">
+            <div class="sunrise">
+              <div class="sunrise-img"><img src="/sunrise.png" alt="" /></div>
+              <div class="sunrise-time">
+                {{this.weatherService.todaysHighlight.sunrise}} AM
+              </div>
+            </div>
+            <div class="sunset">
+              <div class="sunset-img"><img src="/sunset.png" alt="" /></div>
+              <div class="sunset-time">
+                {{this.weatherService.todaysHighlight.sunset}} PM
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="right-container-todays-highlight-cards">
+        <div class="right-container-todays-highlight-card">
+          <div class="right-container-todays-highlight-card-title">
+            Humidity
+          </div>
+          <div
+            class="wind-status-value"
+            style="align-self: self-start; margin-left: 20px"
+          >
+            {{this.weatherService.todaysHighlight.humidity}}<sup class="unit"
+              >%</sup
+            >
+          </div>
+          <div
+            class="humidity-summary"
+            style="align-self: self-start; margin-left: 20px"
+          >
+            {{this.weatherService.todaysHighlight.humidity < 50 ? "Normal " :
+            "High "}}
+          </div>
+        </div>
+        <div class="right-container-todays-highlight-card">
+          <div class="right-container-todays-highlight-card-title">
+            Visibility
+          </div>
+          <div
+            class="wind-status-value"
+            style="align-self: self-start; margin-left: 20px"
+          >
+            {{this.weatherService.todaysHighlight.visibility}}<span class="unit"
+              >km</span
+            >
+          </div>
+          <div
+            class="humidity-summary"
+            style="align-self: self-start; margin-left: 20px"
+          >
+            {{this.weatherService.todaysHighlight.visibility > 2 ? "Normal " :
+            "Low "}}
+          </div>
+        </div>
+        <div class="right-container-todays-highlight-card">
+          <div class="right-container-todays-highlight-card-title">
+            Air Quality
+          </div>
+          <div
+            class="wind-status-value"
+            style="align-self: self-start; margin-left: 20px"
+          >
+            {{this.weatherService.todaysHighlight.airQuality}}
+          </div>
+          <div
+            class="humidity-summary"
+            style="align-self: self-start; margin-left: 20px"
+          >
+            {{this.weatherService.todaysHighlight.airQuality < 100 ?
+            "Satisfactory ": "Unhealthy "}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
