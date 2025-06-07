@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 
 // Mock AuthService
-class MockAuthService {
+class MockAuthService { 
   isLoggedIn = { set: jasmine.createSpy('set') };
   signup(data: any) {
     return of({ token: 'mock-token' }); // simulate successful signup
