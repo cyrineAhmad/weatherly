@@ -9,3 +9,4 @@ export const EnvironmentalVariables = {
   xRapidApiHostName: 'x-rapidapi-host',
   xRapidApiHostValue: 'weather338.p.rapidapi.com',
 };
+ 
