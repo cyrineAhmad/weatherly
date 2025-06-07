@@ -38,7 +38,7 @@ describe('LoginComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
+ 
   it('should call authService.login on login()', () => {
     const authService = TestBed.inject(AuthService);
     component.credentials = { email: 'test@example.com', password: '123456' };
