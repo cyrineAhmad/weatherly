@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../Services/auth/auth'; // Correct relative path
 
 @Component({
-  standalone: true,
+  standalone: true, 
   selector: 'app-signup',
   templateUrl: './signup.html',
   styleUrls: ['./signup.css'],
