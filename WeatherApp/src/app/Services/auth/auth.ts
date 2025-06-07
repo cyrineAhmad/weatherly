@@ -8,7 +8,7 @@ import { tap } from 'rxjs/operators';
 })
 export class AuthService {
   isLoggedIn = signal(false);
-
+ 
   private apiUrl = 'http://localhost:5000';
 
   constructor(private http: HttpClient) {
