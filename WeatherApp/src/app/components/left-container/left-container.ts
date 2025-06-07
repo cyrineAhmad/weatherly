@@ -4,7 +4,7 @@ import { faCloud } from '@fortawesome/free-solid-svg-icons';
 import { faCloudRain } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Weather } from '../../Services/weather';
-@Component({
+@Component({ 
   standalone: true,
   selector: 'app-left-container',
   imports: [FontAwesomeModule],
