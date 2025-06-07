@@ -3,3 +3,4 @@ export class TodayData {
   summaryImage: string;
   temperature: number;
 }
+ 
