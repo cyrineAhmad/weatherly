@@ -4,7 +4,7 @@ import { Weather } from '../../Services/weather';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
-// Mock Weather service
+// Mock Weather service 
 class MockWeatherService {
   today = false;
   week = false;
