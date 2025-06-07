@@ -9,7 +9,7 @@ export interface WeatherDetails {
   'v3-wx-observations-current': V3WxObservationsCurrent;
   'v3-wx-forecast-daily-15day': V3WxForecastDaily15day;
   vt1idxBreathingDaypart: Vt1idxBreathingDaypart;
-  vt1wwir: Vt1wwir;
+  vt1wwir: Vt1wwir; 
   vt1nowcast: Vt1nowcast;
   v2idxRunDaypart5: V2idxRunDaypart5;
   vt1pastpollen: any;
