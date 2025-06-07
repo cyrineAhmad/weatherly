@@ -36,7 +36,7 @@ describe('LeftContainer', () => {
         { provide: Weather, useClass: MockWeatherService }, // provide the mock service
       ],
     }).compileComponents();
-
+ 
     fixture = TestBed.createComponent(LeftContainer);
     component = fixture.componentInstance;
     fixture.detectChanges();
