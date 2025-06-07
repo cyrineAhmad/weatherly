@@ -4,7 +4,7 @@ import {
   HttpTestingController,
 } from '@angular/common/http/testing';
 import { Weather } from './weather';
-
+ 
 describe('Weather Service', () => {
   let service: Weather;
   let httpMock: HttpTestingController;
