@@ -45,7 +45,7 @@ cd backend
 npm install    
 
 3. Run Backend Server  
-node index.js  
+npm start 
 # Server runs on http://localhost:5000    
 
 4. Install Angular App Dependencies  
