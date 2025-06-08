@@ -1,4 +1,4 @@
-Weatherly
+Weatherly  
 A weather app built with Angular and Node.js. Includes user authentication and third-party API integration for live weather updates.  
 
 Key Features  
