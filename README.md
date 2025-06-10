@@ -1,57 +1,157 @@
-Weatherly  
-A weather app built with Angular and Node.js. Includes user authentication and third-party API integration for live weather updates.  
+Weatherly
+A responsive weather forecasting application built with Angular and Node.js.
+It features user authentication, Open-Meteo API integration, modular architecture, and component/unit test readiness.
 
-Key Features  
+Key Features
 
-Authentication  
+JWT Authentication (login/signup with session persistence)
+Weather API Integration using Open-Meteo (current, hourly, daily forecasts)
+Responsive & Accessible UI/UX
+Well-Structured Project Architecture (Pages, Components, Services)
+Unit-Test Friendly component-based design
+Environment-Specific Configs for API endpoints
 
-1)JWT-based login/signup (JWT is issued upon successful login or signup)  
-2)AuthGuard for route protection  
-3)Session persistence using localStorage  
-4)Angular Signals used to track login state reactively  
+Pages
 
-Weather API Integration    
+Login Page 
+Allows users to authenticate using their credentials.
+Implements reactive state tracking via Angular Signals.
+Protected redirection to the main weather page upon success.
+Handles and displays error messages.
 
-1)Integrated with API Dojo’s Weather API via RapidAPI   
-2)Fetches real-time weather details like temperature, conditions, and forecasts  
-3)Uses Angular HttpClient to send authenticated GET requests  
-4)Displays: City name, Current temperature, Forecast, Sunrise/Sunset ,Wind and humidity levels  
+Signup Page 
+Enables new users to create an account.
+Authenticates immediately after signup.
+Error handling for invalid submissions or API issues.
+Includes navigation UX enhancements.
 
-Angular Signals for Authentication    
+Weather Page 
+The homepage of the application.
+Pulls in weather data and displays it in two responsive containers:
+LeftContainer: Location, temperature, current conditions.
+RightContainer: Forecasts and highlights.
+Displays a loading spinner while data is being fetched.
 
-1)Used to track and manage login state reactively in the AuthService.  
-2)Simplifies session management and improves performance by reducing unnecessary checks.    
+Components
 
-Testing    
+Header 
+App name.
+Includes Logout button if logged in.
+Appears on all pages.
 
-Manual testing performed across various features including:  
-1)Login/Signup functionality  
-2)AuthGuard protection for restricted routes  
-3)Real-time weather data fetching  
-4)UI responsiveness across screen sizes    
+Footer 
+API source
+Links for contact 
 
-UI/UX Design    
+LeftContainer
+Displays:
+Current city and temperature.
+Rain percentage
 
-1)Fully responsive layout  
-2)Modular component-based structure  
-3)Clean, intuitive UI    
+RightContainer
+Shows the 7-day forecast with dynamic icons based on weather code.
+Converts raw data into visually meaningful summaries.
+Daily highlights (sunrise, sunset, UV, humidity, etc.).
 
-Setup Instructions  
-1. Clone the Repository  
-git clone https://github.com/cyrineAhmad/weatherly.git    
+LoadingSpinner
+A simple and reusable loading animation used across the app.
+Activated during data fetches.
 
-2. Install Backend Dependencies  
-cd backend  
-npm install    
+Services
 
-3. Run Backend Server  
-npm start 
-# Server runs on http://localhost:5000    
+AuthService
+Handles user login, signup, and logout.
+Stores JWT token in localStorage.
+Uses Angular Signals to manage login state globally.
+Exposes methods:
+login(credentials)
+signup(data)
+logout()
 
-4. Install Angular App Dependencies  
-cd ../WeatherApp  
-npm install    
+Weather Service
+Manages all weather-related logic and data processing.
+Integrates with Open-Meteo’s Weather & Geocoding APIs.
+Methods include:
+getLocationDetails(cityName)
+getWeatherReport(lat, lon)
+getData(): includes API calls, stores structured weather data.
+Data processing methods:
+fillTemperatureDataModel()
+fillWeekData()
+fillTodayData()
+fillTodaysHighlight()
+Utility methods:
+celsiusToFahrenheit(), fahrenheitToCelsius()
+getWeatherDescription(code), getSummaryImage(code, index)
 
-5. Run Angular App  
-ng serve --open  
-# App runs on http://localhost:4200  
+Testing
+Manual Testing:
+User authentication flow
+Token persistence and session state
+API calls and weather rendering
+UI responsiveness across screen sizes
+
+Project Structure
+weatherly/
+├── backend/                        ( Node.js (Express) backend for auth )
+│   └── index.js
+│
+├── WeatherApp/                     ( Angular frontend )
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── pages/
+│   │   │   │   ├── login/
+│   │   │   │   └── signup/
+│   │   │   │   └── weather-page/
+│   │   │   │
+│   │   │   ├── components/
+│   │   │   │   ├── header/
+│   │   │   │   ├── footer/
+│   │   │   │   ├── left-container/
+│   │   │   │   ├── right-container/
+│   │   │   │   └── loading-spinner/
+│   │   │   │
+│   │   │   ├── services/
+│   │   │   │   ├── auth/
+│   │   │   │   └── weather.ts
+│   │   │   ├── models/
+│   │   │   └── environment/
+│   │   │
+│   │   └── main.ts, styles.css
+│
+├── README.md
+
+API Integrations
+Open-Meteo Weather API
+Retrieves weather forecasts, hourly and daily breakdowns.
+
+Open-Meteo Geocoding API
+Converts city names into lat/lon coordinates.
+
+UI/UX
+Consistent design across all pages.
+Responsive across mobile, tablet, and desktop.
+Clear error feedback for failed login/signup.
+Loading states for smooth experience.
+Logical layout using LeftContainer and RightContainer.
+
+Setup Instructions
+
+1. Clone the Repository
+git clone https://github.com/cyrineAhmad/weatherly.git
+
+2. Install Backend Dependencies
+cd backend
+npm install
+
+3. Run Backend Server
+npm start
+# Server runs on http://localhost:5000
+
+4. Install Angular App Dependencies
+cd ../WeatherApp
+npm install
+
+6. Run Angular App
+ng serve --open
+# App runs on http://localhost:4200
