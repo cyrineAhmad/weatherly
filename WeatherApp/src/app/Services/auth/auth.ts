@@ -7,12 +7,14 @@ import { tap } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class AuthService {
+  // Signal to track if user is authenticated
   isLoggedIn = signal(false);
  
   private apiUrl = 'http://localhost:5000';
 
   constructor(private http: HttpClient) {
     const token = localStorage.getItem('token');
+    // Set login state to true if token exists in localStorage
     if (token) {
       this.isLoggedIn.set(true);
     }
