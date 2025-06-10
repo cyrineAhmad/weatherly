@@ -91,36 +91,6 @@ Token persistence and session state
 API calls and weather rendering
 UI responsiveness across screen sizes
 
-Project Structure
-weatherly/
-├── backend/                        ( Node.js (Express) backend for auth )
-│   └── index.js
-│
-├── WeatherApp/                     ( Angular frontend )
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── pages/
-│   │   │   │   ├── login/
-│   │   │   │   └── signup/
-│   │   │   │   └── weather-page/
-│   │   │   │
-│   │   │   ├── components/
-│   │   │   │   ├── header/
-│   │   │   │   ├── footer/
-│   │   │   │   ├── left-container/
-│   │   │   │   ├── right-container/
-│   │   │   │   └── loading-spinner/
-│   │   │   │
-│   │   │   ├── services/
-│   │   │   │   ├── auth/
-│   │   │   │   └── weather.ts
-│   │   │   ├── models/
-│   │   │   └── environment/
-│   │   │
-│   │   └── main.ts, styles.css
-│
-├── README.md
-
 API Integrations
 Open-Meteo Weather API
 Retrieves weather forecasts, hourly and daily breakdowns.
