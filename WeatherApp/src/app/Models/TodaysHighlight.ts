@@ -5,6 +5,6 @@ export class TodaysHighlight {
   sunset: string;
   humidity: number;
   visibility: number;
-  airQuality: number;
+  cloudCover: number;
 }
  
