@@ -39,7 +39,7 @@ export interface WeatherDetails {
     uv_index_max: number[];
     windgusts_10m_max?: number[];
     precipitation_sum?: number[];
-    windspeed_10m_max?: number[]; // ✅ Add this line
-    sunshine_duration?: number[]; // ✅ Add this line if used in daily context
+    windspeed_10m_max?: number[]; 
+    sunshine_duration?: number[]; 
   };
 }
