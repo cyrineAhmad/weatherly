@@ -20,8 +20,7 @@ export class Header {
   }
 
   logout() {
-    // Remove user/session info here if stored (e.g., token, localStorage)
-    localStorage.clear(); // or localStorage.removeItem('token') etc.
+    localStorage.clear(); 
     this.router.navigate(['/login']);
   }
 
