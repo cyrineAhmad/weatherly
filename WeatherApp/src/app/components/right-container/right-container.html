@@ -167,27 +167,33 @@
             class="humidity-summary"
             style="align-self: self-start; margin-left: 20px"
           >
-            {{this.weatherService.todaysHighlight.visibility > 2 ? "Normal " :
+            {{this.weatherService.todaysHighlight.visibility > 9 ? "Normal " :
             "Low "}}
           </div>
         </div>
         <div class="right-container-todays-highlight-card">
           <div class="right-container-todays-highlight-card-title">
-            Air Quality
+            Cloud Cover
           </div>
           <div
             class="wind-status-value"
             style="align-self: self-start; margin-left: 20px"
           >
-            {{this.weatherService.todaysHighlight.airQuality}}
+            {{this.weatherService.todaysHighlight.cloudCover}}
           </div>
           <div
-            class="humidity-summary"
-            style="align-self: self-start; margin-left: 20px"
-          >
-            {{this.weatherService.todaysHighlight.airQuality < 100 ?
-            "Satisfactory ": "Unhealthy "}}
-          </div>
+  class="humidity-summary"
+  style="align-self: self-start; margin-left: 20px"
+>
+  {{
+    this.weatherService.todaysHighlight.cloudCover <= 30
+      ? "Clear skies"
+      : this.weatherService.todaysHighlight.cloudCover <= 70
+      ? "Partly cloudy"
+      : "Overcast"
+  }}
+</div>
+
         </div>
       </div>
     </div>
