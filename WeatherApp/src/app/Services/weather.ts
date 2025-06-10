@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LocationDetails } from '../Models/LocationDetails';
 import { WeatherDetails } from '../Models/WeatherDetails';
@@ -13,19 +13,18 @@ import { EnvironmentalVariables } from '../Environment/EnvironmentalVariables';
   providedIn: 'root',
 })
 export class Weather {
-  //var that will be filled by API Endpoints
+  public loading: boolean = true;
   locationDetails?: LocationDetails;
   weatherDetails?: WeatherDetails;
-  //var that have the extracted data from the API Endpoint Variables
   temperatureData: TemperatureData = new TemperatureData();
   todayData: TodayData[] = [];
   weekData: WeekData[] = [];
   todaysHighlight?: TodaysHighlight = new TodaysHighlight();
 
   cityName: string = 'Beirut';
-  language: string = 'en-US';
-  date: string = '20250606';
-  units: string = 'm';
+  language: string = 'en';
+  date: string = '2025-06-06';
+  temperatureUnit: string = 'celsius';
 
   currentTime: Date;
   today: boolean = false;
@@ -37,114 +36,163 @@ export class Weather {
     this.getData();
   }
 
-  getSummaryImage(summary: string): string {
-    var cloudySunny = '/cloudySunny.png';
-    var rainySunny = '/rainySunny.png';
-    var windy = '/windy.png';
-    var sunny = '/sunny.png';
-    var rainy = '/rainy.png';
+  getSummaryImage(weatherCode: number, dayIndex: number = 0): string {
+  const daily = this.weatherDetails?.daily;
+  if (!daily) return '/cloudySunny.png';
 
-    if (
-      String(summary).includes('Partly Cloudy') ||
-      String(summary).includes('P Cloudy')
-    )
-      return cloudySunny;
-    else if (
-      String(summary).includes('Partly Rainy') ||
-      String(summary).includes('P Rainy')
-    )
-      return rainySunny;
-    else if (String(summary).includes('Wind')) return windy;
-    else if (String(summary).includes('Rain')) return rainy;
-    else if (String(summary).includes('Sun')) return sunny;
-    return cloudySunny;
+  const tempMax = daily.temperature_2m_max?.[dayIndex] ?? 0;
+  const tempMin = daily.temperature_2m_min?.[dayIndex] ?? 0;
+  const precipitation = daily.precipitation_sum?.[dayIndex] ?? 0;
+  const windSpeed = daily.windspeed_10m_max?.[dayIndex] ?? 0;
+  const sunshine = daily.sunshine_duration?.[dayIndex] ?? 0;
+  const cloudCover = this.weatherDetails?.hourly.cloudcover?.[dayIndex] ?? 50;
+
+  // Logic to adjust image
+  if (precipitation > 10) return '/rainy.png';
+  if (tempMax < 5) return '/snow.png';
+  if (windSpeed > 50) return '/windy.png';
+  if (cloudCover > 70) return '/cloudy.png';
+  if (sunshine > 25000 && cloudCover < 30) return '/sunny.png';
+
+  if (weatherCode >= 0 && weatherCode <= 3) return '/sunny.png';
+  if (weatherCode === 4) return '/cloudy.png';
+  if (weatherCode === 45 || weatherCode === 48) return '/fog.png';
+  if (weatherCode >= 51 && weatherCode <= 67) return '/rainy.png';
+  if (weatherCode >= 71 && weatherCode <= 77) return '/snow.png';
+  if (weatherCode >= 80 && weatherCode <= 82) return '/rainy.png';
+  if (weatherCode >= 95 && weatherCode <= 99) return '/thunderstorm.png';
+
+  return '/cloudySunny.png';
+}
+
+
+  getWeatherDescription(weatherCode: number): string {
+    const codes: { [key: number]: string } = {
+      0: 'Clear sky',
+      1: 'Mainly clear',
+      2: 'Partly cloudy',
+      3: 'Overcast',
+      45: 'Fog',
+      48: 'Depositing rime fog',
+      51: 'Light drizzle',
+      53: 'Moderate drizzle',
+      55: 'Dense drizzle',
+      56: 'Light freezing drizzle',
+      57: 'Dense freezing drizzle',
+      61: 'Slight rain',
+      63: 'Moderate rain',
+      65: 'Heavy rain',
+      66: 'Light freezing rain',
+      67: 'Heavy freezing rain',
+      71: 'Slight snow fall',
+      73: 'Moderate snow fall',
+      75: 'Heavy snow fall',
+      77: 'Snow grains',
+      80: 'Slight rain showers',
+      81: 'Moderate rain showers',
+      82: 'Violent rain showers',
+      85: 'Slight snow showers',
+      86: 'Heavy snow showers',
+      95: 'Thunderstorm',
+      96: 'Thunderstorm with slight hail',
+      99: 'Thunderstorm with heavy hail'
+    };
+    return codes[weatherCode] || 'Unknown weather';
   }
-  //to create data chunks for UI, using data received from the API
+
   fillTemperatureDataModel() {
+    if (!this.weatherDetails?.current_weather) return;
+
+    const current = this.weatherDetails.current_weather;
     this.currentTime = new Date();
-    this.temperatureData.day =
-      this.weatherDetails['v3-wx-observations-current'].dayOfWeek;
-    this.temperatureData.time = `${String(this.currentTime.getHours()).padStart(
-      2,
-      '0'
-    )}:${String(this.currentTime.getMinutes()).padStart(2, '0')}`;
-    this.temperatureData.temperature =
-      this.weatherDetails['v3-wx-observations-current'].temperature;
-    this.temperatureData.location = `${this.locationDetails.location.city[0]}`;
-    this.temperatureData.rainPercent =
-      this.weatherDetails['v3-wx-observations-current'].precip24Hour;
-    this.temperatureData.summaryPhrase =
-      this.weatherDetails['v3-wx-observations-current'].wxPhraseShort;
-    this.temperatureData.summaryImage = this.getSummaryImage(
-      this.temperatureData.summaryPhrase
-    );
+
+    this.temperatureData.day = this.currentTime.toLocaleDateString('en-US', { weekday: 'long' });
+    this.temperatureData.time = `${String(this.currentTime.getHours()).padStart(2, '0')}:${String(this.currentTime.getMinutes()).padStart(2, '0')}`;
+    this.temperatureData.temperature = current.temperature;
+    this.temperatureData.location = this.cityName;
+    this.temperatureData.rainPercent = this.weatherDetails.daily?.precipitation_sum?.[0] ?? 0;
+    this.temperatureData.summaryPhrase = this.getWeatherDescription(current.weathercode);
+    this.temperatureData.summaryImage = this.getSummaryImage(current.weathercode);
   }
 
   fillWeekData() {
-    var weekCount = 0;
-    while (weekCount < 7) {
-      this.weekData.push(new WeekData());
-      this.weekData[weekCount].day = this.weatherDetails[
-        'v3-wx-forecast-daily-15day'
-      ].dayOfWeek[weekCount].slice(0, 3);
-      this.weekData[weekCount].tempMax =
-        this.weatherDetails[
-          'v3-wx-forecast-daily-15day'
-        ].calendarDayTemperatureMax[weekCount];
-      this.weekData[weekCount].tempMin =
-        this.weatherDetails[
-          'v3-wx-forecast-daily-15day'
-        ].calendarDayTemperatureMin[weekCount];
-      this.weekData[weekCount].summaryImage = this.getSummaryImage(
-        this.weatherDetails['v3-wx-forecast-daily-15day'].narrative[weekCount]
-      );
-      weekCount++;
-    }
+  if (
+    !this.weatherDetails?.daily ||
+    !this.weatherDetails.daily.time ||
+    !this.weatherDetails.daily.temperature_2m_max ||
+    !this.weatherDetails.daily.temperature_2m_min ||
+    !this.weatherDetails.daily.weathercode
+  ) {
+    console.warn('Missing daily data in weatherDetails:', this.weatherDetails?.daily);
+    return;
   }
+
+  this.weekData = [];
+
+  for (let i = 0; i < 7; i++) {
+    // guard against missing indices
+    if (
+      !this.weatherDetails.daily.time[i] ||
+      this.weatherDetails.daily.temperature_2m_max[i] === undefined ||
+      this.weatherDetails.daily.temperature_2m_min[i] === undefined ||
+      this.weatherDetails.daily.weathercode[i] === undefined
+    ) {
+      console.warn(`Missing daily entry at index ${i}`);
+      continue;
+    }
+
+    const dayData = new WeekData();
+    const date = new Date(this.weatherDetails.daily.time[i]);
+    dayData.day = date.toLocaleDateString(this.language, { weekday: 'short' });
+    dayData.tempMax = this.weatherDetails.daily.temperature_2m_max[i];
+    dayData.tempMin = this.weatherDetails.daily.temperature_2m_min[i];
+
+    const code = this.weatherDetails.daily.weathercode[i];
+    console.log(`Day ${i}: Weather code = ${code}`);
+
+    dayData.summaryImage = this.getSummaryImage(code, i);
+
+    this.weekData.push(dayData);
+  }
+}
+
+
 
   fillTodayData() {
-    var todayCount = 0;
-    while (todayCount < 7) {
-      this.todayData.push(new TodayData());
-      this.todayData[todayCount].time = this.weatherDetails[
-        'v3-wx-forecast-hourly-10day'
-      ].validTimeLocal[todayCount].slice(11, 16);
-      this.todayData[todayCount].temperature =
-        this.weatherDetails['v3-wx-forecast-hourly-10day'].temperature[
-          todayCount
-        ];
-      this.todayData[todayCount].summaryImage = this.getSummaryImage(
-        this.weatherDetails['v3-wx-forecast-hourly-10day'].wxPhraseShort[
-          todayCount
-        ]
-      );
-      todayCount++;
+    if (!this.weatherDetails?.hourly) return;
+
+    this.todayData = [];
+    const now = new Date();
+    const currentHour = now.getHours();
+
+    for (let i = currentHour; i < currentHour + 7; i++) {
+      if (i >= this.weatherDetails.hourly.time.length) break;
+
+      const hourData = new TodayData();
+      hourData.time = this.weatherDetails.hourly.time[i].substring(11, 16);
+      hourData.temperature = this.weatherDetails.hourly.temperature_2m[i];
+      hourData.summaryImage = this.getSummaryImage(this.weatherDetails.hourly.weathercode[i]);
+
+      this.todayData.push(hourData);
     }
   }
 
-  getTimeFromString(localTime: string) {
-    return localTime.slice(11, 16);
-  }
+  private fillTodaysHighlight() {
+    if (!this.weatherDetails?.daily || !this.weatherDetails.current_weather) return;
 
-  fillTodaysHighlight() {
-    this.todaysHighlight.airQuality =
-      this.weatherDetails[
-        'v3-wx-globalAirQuality'
-      ].globalairquality.airQualityCategoryIndex;
-    this.todaysHighlight.humidity =
-      this.weatherDetails['v3-wx-observations-current'].relativeHumidity;
-    this.todaysHighlight.sunrise = this.getTimeFromString(
-      this.weatherDetails['v3-wx-observations-current'].sunriseTimeLocal
-    );
-    this.todaysHighlight.sunset = this.getTimeFromString(
-      this.weatherDetails['v3-wx-observations-current'].sunsetTimeLocal
-    );
-    this.todaysHighlight.uvIndex =
-      this.weatherDetails['v3-wx-observations-current'].uvIndex;
-    this.todaysHighlight.visibility =
-      this.weatherDetails['v3-wx-observations-current'].visibility;
-    this.todaysHighlight.windStatus =
-      this.weatherDetails['v3-wx-observations-current'].windSpeed;
+    const daily = this.weatherDetails.daily;
+    const current = this.weatherDetails.current_weather;
+
+    this.todaysHighlight.sunrise = daily.sunrise?.[0]?.substring(11, 16) ?? 'N/A';
+    this.todaysHighlight.sunset = daily.sunset?.[0]?.substring(11, 16) ?? 'N/A';
+    this.todaysHighlight.windStatus = daily.windgusts_10m_max?.[0] ?? current.windspeed;
+   this.todaysHighlight.humidity = this.weatherDetails.hourly?.relative_humidity_2m?.[0] ?? 0;
+    this.todaysHighlight.uvIndex = daily.uv_index_max?.[0] ?? 0;
+   this.todaysHighlight.visibility = Number(((this.weatherDetails?.hourly?.visibility?.[0] ?? 0) / 1000).toFixed(1));
+   this.todaysHighlight.cloudCover = this.weatherDetails?.hourly?.cloudcover?.[0];
+
+
+
   }
 
   prepareData(): void {
@@ -152,11 +200,14 @@ export class Weather {
     this.fillWeekData();
     this.fillTodayData();
     this.fillTodaysHighlight();
-    console.log(this.weatherDetails);
-    console.log(this.temperatureData);
-    console.log(this.weekData);
-    console.log(this.todayData);
-    console.log(this.todaysHighlight);
+
+    console.log('Weather Data:', {
+      weatherDetails: this.weatherDetails,
+      temperatureData: this.temperatureData,
+      weekData: this.weekData,
+      todayData: this.todayData,
+      todaysHighlight: this.todaysHighlight
+    });
   }
 
   celsiusToFahrenheit(celsius: number): number {
@@ -167,84 +218,65 @@ export class Weather {
     return +((fahrenheit - 32) * 0.555).toFixed(2);
   }
 
-  //to get location details from the API, using cityName as input
-  getLocationDetails(
-    cityName: string,
-    language: string
-  ): Observable<LocationDetails> {
-    return this.httpClient.get<LocationDetails>(
-      EnvironmentalVariables.weatherApiLocationBaseURL,
+  getLocationDetails(cityName: string): Observable<{ results: LocationDetails[] }> {
+    return this.httpClient.get<{ results: LocationDetails[] }>(
+      `${EnvironmentalVariables.geocodingApiBaseURL}search`,
       {
-        headers: new HttpHeaders()
-          .set(
-            EnvironmentalVariables.xRapidApiKeyName,
-            EnvironmentalVariables.xRapidApiKeyValue
-          )
-          .set(
-            EnvironmentalVariables.xRapidApiHostName,
-            EnvironmentalVariables.xRapidApiHostValue
-          ),
         params: new HttpParams()
-          .set('query', cityName)
-          .set('language', language),
+          .set('name', cityName)
+          .set('count', '1')
+          .set('language', this.language)
+          .set('format', 'json')
       }
     );
   }
-  getWeatherReport(
-    date: string,
-    latitude: number,
-    longitude: number,
-    language: string,
-    units: string
-  ): Observable<WeatherDetails> {
+
+  getWeatherReport(latitude: number, longitude: number): Observable<WeatherDetails> {
+    const params = new HttpParams()
+      .set('latitude', latitude.toString())
+      .set('longitude', longitude.toString())
+      .set('timezone', 'auto')
+      .set('current_weather', 'true')
+      .set('hourly', 'temperature_2m,weathercode,visibility,apparent_temperature,cloudcover,relative_humidity_2m')
+      .set('temperature_unit', this.temperatureUnit)
+      .set('daily', 'temperature_2m_max,temperature_2m_min,precipitation_sum,sunshine_duration,windspeed_10m_max,windgusts_10m_max,sunrise,sunset,uv_index_max,weathercode')
+
     return this.httpClient.get<WeatherDetails>(
-      EnvironmentalVariables.weatherApiForecastBaseURL,
-      {
-        headers: new HttpHeaders()
-          .set(
-            EnvironmentalVariables.xRapidApiKeyName,
-            EnvironmentalVariables.xRapidApiKeyValue
-          )
-          .set(
-            EnvironmentalVariables.xRapidApiHostName,
-            EnvironmentalVariables.xRapidApiHostValue
-          ),
-        params: new HttpParams()
-          .set('date', date)
-          .set('latitude', latitude)
-          .set('longitude', longitude)
-          .set('language', language)
-          .set('units', units),
-      }
+      `${EnvironmentalVariables.weatherApiBaseURL}forecast`,
+      { params }
     );
   }
+
   getData() {
+    this.loading = true;
     this.todayData = [];
     this.weekData = [];
     this.temperatureData = new TemperatureData();
     this.todaysHighlight = new TodaysHighlight();
-    var latitude = 0;
-    var longitude = 0;
 
-    this.getLocationDetails(this.cityName, this.language).subscribe({
-      next: (Response) => {
-        this.locationDetails = Response;
-        latitude = this.locationDetails?.location.latitude[0];
-        longitude = this.locationDetails?.location.longitude[0];
-
-        this.getWeatherReport(
-          this.date, 
-          latitude,
-          longitude,
-          this.language,
-          this.units
-        ).subscribe({
-          next: (Response) => {
-            this.weatherDetails = Response;
-            this.prepareData();
-          },
-        });
+    this.getLocationDetails(this.cityName).subscribe({
+      next: (response) => {
+        if (response.results && response.results.length > 0) {
+          this.locationDetails = response.results[0];
+          this.getWeatherReport(
+            this.locationDetails.latitude,
+            this.locationDetails.longitude
+          ).subscribe({
+            next: (weatherResponse) => {
+              this.weatherDetails = weatherResponse;
+              console.log('API weatherDetails:', this.weatherDetails); 
+              this.prepareData();
+              this.loading = false;
+            },
+            error: (weatherError) => {
+              console.error('Error fetching weather data:', weatherError);
+            }
+          });
+        }
       },
+      error: (locationError) => {
+        console.error('Error fetching location:', locationError);
+      }
     });
   }
 }
