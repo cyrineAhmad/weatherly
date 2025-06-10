@@ -1,0 +1,68 @@
+.app-footer {
+  background-color: #f8f9fa;
+  color: #333;
+  text-align: center;
+  padding: 1.5rem 1rem;
+  font-size: 0.9rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.footer-section {
+  margin: 0.8rem 0;
+}
+
+.footer-section p {
+  font-weight: 500;
+  color: #555;
+}
+
+.footer-section a {
+  color: #5a67d8;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.footer-section a:hover {
+  color: #6e8efb;
+  text-decoration: underline;
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 1.2rem 0;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.social-link:hover {
+  background-color: rgba(110, 142, 251, 0.1);
+}
+
+.social-link img {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.2s ease;
+}
+
+.social-link:hover img {
+  transform: scale(1.1);
+}
+
+.social-link.test-hover, 
+.social-link:hover {
+  background-color: rgba(110, 142, 251, 0.1);
+}
